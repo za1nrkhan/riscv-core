@@ -1,4 +1,4 @@
-module rv_alu ( // Alternatively module rv_alu import rv_pkg::*; ( input alu_operations_e alu_ctrl_i,
+module rv_alu (
     input  rv_pkg::alu_operations_e alu_ctrl_i, 
     input        [31:0]             operand_a_i,
     input        [31:0]             operand_b_i,
