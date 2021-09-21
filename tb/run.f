@@ -14,9 +14,12 @@
 // compile files
 ../src/rv_pkg.sv
 ../src/rv_alu.sv
+../src/counter.sv
 
 // tesbenches
 alu_tb.sv
+counter_tb.sv
 
-// current testbench
--top alu_tb
+// current testbench (pass on command line)
+// -top alu_tb
+// -top counter_tb
