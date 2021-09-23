@@ -14,7 +14,9 @@ package rv_pkg;
         OP_SLT = 4'h7,
 
         // Logical NOR
-        OP_NOR = 4'hC
+        OP_NOR = 4'hC,
+
+        OP_NOP = 4'hF
 
     } alu_operations_e;
     
