@@ -31,6 +31,9 @@ module rv_decoder (
 
     assign alu_ctrl_d = {instr_i[30], instr_i[14:12]};
 
+    logic [5:0] alu_case;
+    assign alu_case = {alu_op, alu_ctrl_d};
+
     rv_ctrl u_rv_ctrl(
         .opcode_i ( instr_i[6:0] ),
         .alu_op_o (  alu_op      )
@@ -46,17 +49,20 @@ module rv_decoder (
     // or     |     1     |     0     |       0       |       1       |       1       |       0       |  OP_OR
     // addi   |     1     |     0     |       -       |       0       |       0       |       0       |  OP_ADD 10x000 instr_i[5] = 0
      
-    always @(alu_op, alu_ctrl_d, instr_i[5]) begin
-        case ({alu_op, alu_ctrl_d})
-            6'b00xxxx: alu_ctrl_o = OP_ADD;
-            6'bx1xxxx: alu_ctrl_o = OP_SUB;
-            6'b1x0000: alu_ctrl_o = OP_ADD;
-            6'b1xx000: begin
-                if (!instr_i[5]) alu_ctrl_o = OP_ADD;
-                else           alu_ctrl_o = OP_SUB;
+    always @(*) begin
+        unique casex (alu_case)
+            6'b00????: alu_ctrl_o = OP_ADD;
+            6'b?1????: alu_ctrl_o = OP_SUB;
+            6'b1?0000: alu_ctrl_o = OP_ADD;
+            6'b1??000: begin
+                if (instr_i[5]) begin
+                    alu_ctrl_o = OP_SUB;
+                end else begin
+                    alu_ctrl_o = OP_ADD;
+                end           
             end
-            6'b1x0111: alu_ctrl_o = OP_AND;
-            6'b1x0110: alu_ctrl_o = OP_OR;
+            6'b1?0111: alu_ctrl_o = OP_AND;
+            6'b1?0110: alu_ctrl_o = OP_OR;
             default:   alu_ctrl_o = OP_NOP;
         endcase
     end
