@@ -17,6 +17,7 @@
 ../src/counter.sv
 ../src/regfile.sv
 ../src/rv_decoder.sv
+../src/rv_ctrl.sv
 ../src/rv_top.sv
 
 // tesbenches
