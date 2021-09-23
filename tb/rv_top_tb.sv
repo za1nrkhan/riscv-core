@@ -16,7 +16,7 @@ module rv_top_tb;
         rst_ni = 0;
         #2;
         rst_ni = 1;
-        #10;
+        #30;
         $finish;
     end
 
