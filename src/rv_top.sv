@@ -27,11 +27,15 @@ module rv_top (
 
     assign operand_b = operand_b_sel ? rs_imm_b : rs_data_b;
     assign rd_data = rd_imm;
-
+    
+    logic [31:0] next_addr;
+    assign next_addr = addr_o + 'h4;
+    
     counter u_counter(
-        .clk_i  (  clk_i ),
-        .rst_ni ( rst_ni ),
-        .addr_o ( addr_o )
+        .clk_i       (     clk_i ),
+        .rst_ni      (    rst_ni ),
+        .next_addr_i ( next_addr ),
+        .addr_o      (    addr_o )
     );
 
     logic [31:0] alu_result;
