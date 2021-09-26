@@ -28,7 +28,11 @@ module rv_top (
     logic [31:0] rd_imm;
 
     assign operand_b = operand_b_sel ? rs_imm_b : rs_data_b;
-    assign rd_data = rd_imm;
+    
+    logic        alu_dst;
+    logic [31:0] alu_result;
+
+    assign rd_data = alu_dst ? rd_imm : alu_result;
     
     logic [31:0] next_addr;
     logic        branch_instr;
@@ -45,8 +49,6 @@ module rv_top (
         .addr_o      (    addr_o )
     );
 
-    logic [31:0] alu_result;
-
     rv_decoder u_decoder(
         .instr_i     (       instr_i ),
         .rs_addr_a_o (     rs_addr_a ),
@@ -58,7 +60,8 @@ module rv_top (
         .alu_ctrl_o  (      alu_ctrl ),
         .rd_we_o     (         rd_we ),
         .branch_target_o ( branch_target ),
-        .branch_o    (  branch_instr )
+        .branch_o    (  branch_instr ),
+        .alu_dst_o   (       alu_dst )
     );
 
     rv_alu u_alu (
