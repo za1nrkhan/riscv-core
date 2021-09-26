@@ -4,6 +4,11 @@ module rv_top_tb;
 
     logic [31:0] instr_i;
     logic [31:0] addr_o;
+    
+    logic [31:0] rdata;
+    logic        data_we;
+    logic [31:0] wdata;
+    logic [31:0] data_addr;
 
     always #1 clk_i <= ( clk_i === 1'b0 );
     
@@ -24,8 +29,15 @@ module rv_top_tb;
         .clk_i   (   clk_i ),
         .rst_ni  (  rst_ni ),
         .addr_o  (  addr_o ),
-        .instr_i ( instr_i )
+        .instr_i ( instr_i ),
+        .data_i      (     rdata ),
+        .data_we_o   (   data_we ),
+        .data_o      (     wdata ),
+        .data_addr_o ( data_addr )
     );
+
+    logic [3:0] WE;
+    assign WE = {4{data_we}};
 
     DFFRAM u_iccm(
         .CLK (   clk_i      ),
@@ -34,6 +46,15 @@ module rv_top_tb;
         .Di  (   32'h0      ),
         .Do  ( instr_i      ),
         .A   (  addr_o[9:2] )
+    );
+    
+    DFFRAM u_dccm(
+        .CLK (     clk_i      ),
+        .WE  (        WE      ),
+        .EN  (      1'b1      ),
+        .Di  (     wdata      ),
+        .Do  (     rdata      ),
+        .A   ( data_addr[9:2] )
     );
 
     initial begin
