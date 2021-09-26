@@ -3,7 +3,12 @@ module rv_top (
     input               rst_ni,
 
     output logic [31:0] addr_o,
-    input        [31:0] instr_i
+    input        [31:0] instr_i,
+
+    input        [31:0] data_i,
+    output logic        data_we_o,
+    output logic [31:0] data_o,
+    output logic [31:0] data_addr_o
 );
     import rv_pkg::*;
     
@@ -28,11 +33,16 @@ module rv_top (
     logic [31:0] rd_imm;
 
     assign operand_b = operand_b_sel ? rs_imm_b : rs_data_b;
+    assign data_o = rs_data_b;
     
-    logic        alu_dst;
+    logic [ 1:0] alu_dst;
     logic [31:0] alu_result;
 
-    assign rd_data = alu_dst ? rd_imm : alu_result;
+    assign rd_data = alu_dst[1] ? rd_imm : 
+                     alu_dst[0] ? data_i : 
+                                  alu_result;
+    
+    assign data_addr_o = alu_result;
     
     logic [31:0] next_addr;
     logic        branch_instr;
@@ -61,7 +71,8 @@ module rv_top (
         .rd_we_o     (         rd_we ),
         .branch_target_o ( branch_target ),
         .branch_o    (  branch_instr ),
-        .alu_dst_o   (       alu_dst )
+        .alu_dst_o   (       alu_dst ),
+        .data_we_o   (     data_we_o )
     );
 
     rv_alu u_alu (

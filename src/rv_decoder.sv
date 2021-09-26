@@ -16,7 +16,8 @@ module rv_decoder (
     output logic [31:0] branch_target_o,
     output logic        branch_o,
 
-    output logic        alu_dst_o
+    output logic [ 1:0] alu_dst_o,
+    output logic        data_we_o
 );
     import rv_pkg::*;
 
@@ -24,7 +25,8 @@ module rv_decoder (
                         12'b0 };        // 12-bit zero
     
     assign rs_imm_b_o = { {21{instr_i[31]}}, // 12 bit
-                          instr_i[30:20] };  // 11 bits of 12-bit immediate
+                          instr_i[30:25], 
+                          data_we_o ? rd_addr_o : rs_addr_b_o };  // 11 bits of 12-bit immediate
 
     assign branch_target_o = { {20{instr_i[31]}}, 
                                 instr_i[7], instr_i[30:25], 
@@ -49,7 +51,8 @@ module rv_decoder (
         .branch_o ( branch_o     ),
         .alu_src_o ( alu_src_o   ),
         .rd_we_o  ( rd_we_o      ),
-        .alu_dst_o ( alu_dst_o   )
+        .alu_dst_o ( alu_dst_o   ),
+        .data_we_o ( data_we_o   )
     );
 
     // ALU Control
