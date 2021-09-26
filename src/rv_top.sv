@@ -8,6 +8,8 @@ module rv_top (
     import rv_pkg::*;
     
     alu_operations_e alu_ctrl;
+    
+    logic        alu_zero;
 
     logic [ 4:0] rs_addr_a;
     logic [31:0] rs_data_a;
@@ -29,7 +31,12 @@ module rv_top (
     assign rd_data = rd_imm;
     
     logic [31:0] next_addr;
-    assign next_addr = addr_o + 'h4;
+    logic        branch_instr;
+    logic [31:0] branch_target;
+    logic        test_next_addr;
+
+    assign test_next_addr = branch_instr & alu_zero;
+    assign next_addr = test_next_addr ? (addr_o + branch_target) : (addr_o + 'h4);
     
     counter u_counter(
         .clk_i       (     clk_i ),
@@ -39,7 +46,6 @@ module rv_top (
     );
 
     logic [31:0] alu_result;
-    logic        alu_zero;
 
     rv_decoder u_decoder(
         .instr_i     (       instr_i ),
@@ -50,7 +56,9 @@ module rv_top (
         .rd_imm_o    (        rd_imm ),
         .alu_src_o   ( operand_b_sel ),
         .alu_ctrl_o  (      alu_ctrl ),
-        .rd_we_o     (         rd_we )
+        .rd_we_o     (         rd_we ),
+        .branch_target_o ( branch_target ),
+        .branch_o    (  branch_instr )
     );
 
     rv_alu u_alu (
