@@ -10,9 +10,9 @@ module DFFRAM(
 
 reg [31:0] mem [0:255];
 
-always @(posedge CLK) begin
+always @(*) begin
     if (EN == 1'b1) begin
-        Do <= mem[A];
+        Do = mem[A];
         if (WE[0]) mem[A][ 7: 0] <= Di[ 7: 0];
         if (WE[1]) mem[A][15: 8] <= Di[15: 8];
         if (WE[2]) mem[A][23:16] <= Di[23:16];
