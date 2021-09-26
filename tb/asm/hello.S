@@ -5,6 +5,6 @@
 0x10 here: nop                    -00
 0x14       nop                    -04
 0x18       nop                    -08
-0x1C       lw  t0 0x4(x0)         -12
-0x20       sw  t0 0x8(x0)         -16
+0x1C       sw  a0 0x4(x0)         -12
+0x20       lw  a0 0x8(x0)         -16
 0x24       beq x0     x0 here(-20)
